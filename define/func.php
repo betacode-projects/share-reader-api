@@ -117,6 +117,6 @@ function create_update_sql($link, $table_name, $dict, $id_value, $id_name='id'){
 
 
 function create_uuid(){
-    return hash('sha256', uniqid(mt_rand(), true));
+    return hash('sha256', bin2hex(random_bytes(64)));
 }
 
