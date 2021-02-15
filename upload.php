@@ -3,7 +3,7 @@
 require_once './__default.php';
 
 // ファイルチェック
-if (!isset($_FILES['file'])){
+if (!isset($_FILES['file']) || empty($_FILES['file']['tmp_name'])){
     show_errors($json_list, 'ファイルがアップロードされていません。');
 }
 

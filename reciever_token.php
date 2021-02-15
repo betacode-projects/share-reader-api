@@ -4,13 +4,6 @@
 require_once './__default.php';
 
 
-// ----- パラメータチェック
-if (!isset($_POST['status']) || $_POST['status'] !== 'reciever'){
-    $json_list['post'] = $_POST;
-    show_errors($json_list, '無効なステータスです。');
-}
-
-
 // ----- DBへ登録
 $link = @mysqli_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 if (!$link) {
