@@ -2,7 +2,6 @@
 
 // ----- デフォルト設定
 require_once './__default.php';
-$json_list['data'] = ['flag' => false];
 
 
 // ----- トークンチェック

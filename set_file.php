@@ -28,7 +28,6 @@ $result = mysqli_query($link, $token_sql);
 if (!$result){
     show_errors($json_list, 'トークンが一致しませんでした', 'NG');
 }
-mysqli_insert_id($link);
 
 
 // ----- json出力

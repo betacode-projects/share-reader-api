@@ -43,8 +43,6 @@ if ($token_changed){
     $result = mysqli_query($link, $token_sql);
     if (!$result)
         show_errors($json_list, 'データーベースへの登録に失敗しました。もう一度お試しください。', 'DB');
-
-    mysqli_insert_id($link);
 }
 
 // ----- json出力
