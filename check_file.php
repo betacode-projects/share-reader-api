@@ -18,7 +18,7 @@ if (!$link) {
 mysqli_set_charset($link, 'utf8');
 
 
-$check_sql = 'SELECT * FROM file_download WHERE recv_token = "'. esc($link, $_POST['token']) .'"';
+$check_sql = 'SELECT * FROM qr_read_list WHERE recv_token = "'. esc($link, $_POST['token']) .'"';
 $file_list = get_allrows($link, $check_sql);
 
 if (count($file_list) <= 0){

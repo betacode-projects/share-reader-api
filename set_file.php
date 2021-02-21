@@ -19,7 +19,7 @@ mysqli_set_charset($link, 'utf8');
 
 
 // SQL生成
-$token_sql = create_insert_sql($link, 'file_download', [
+$token_sql = create_insert_sql($link, 'qr_read_list', [
     'recv_token' => $_POST['recv_token'],
     'send_token' => $_POST['token']
 ]);

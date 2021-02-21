@@ -27,6 +27,13 @@ if (!$result){
     show_errors($json_list, 'トークンが存在しません');
 }
 
+$token_remove_sql = create_update_sql($link, 'file_info', ['file_flag' => 2], '"'.esc($link, $_POST['token']) .'"', 'send_token');
+$result = mysqli_query($link, $token_remove_sql);
+
+if (!$result){
+    show_errors($json_list, 'トークンが存在しません');
+}
+
 
 $json_list['data'] = ['flag' => true];
 show_success($json_list, '送信者のトークンを削除しました。');

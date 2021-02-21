@@ -2,6 +2,7 @@
 // ----- デフォルト設定
 require_once './__default.php';
 
+$secret_token = create_uuid();
 // ファイルチェック
 if (!isset($_FILES['file']) || empty($_FILES['file']['tmp_name'])){
     show_errors($json_list, 'ファイルがアップロードされていません。');
@@ -32,6 +33,7 @@ $token_sql = create_insert_sql($link, 'sender', [
     'send_token' => $token,
     'send_agent' => $_SERVER['HTTP_USER_AGENT'],
     'send_ipaddr' => $_SERVER["REMOTE_ADDR"],
+    'secret_token' => $secret_token,
     'send_flag' => 1
 ]);
 $result = mysqli_query($link, $token_sql);
@@ -43,12 +45,14 @@ if (!$result)
 $file_hash = hash_file('sha256', $_FILES['file']['tmp_name']);
 
 // file_infoテーブルに追加
+$file_path_hash = create_uuid();
 $fileinfo_sql = create_insert_sql($link, 'file_info', [
     'send_token' => $token,
     'file_size' => (int)$file_size,
     'file_name' => $file_name,
     'file_format' => $file_mime,
     'file_hash' => $file_hash,
+    'file_path' => $file_path_hash,
     'file_flag' => 1
 ]);
 $result = mysqli_query($link, $fileinfo_sql);
@@ -57,8 +61,7 @@ if (!$result)
 
 
 // アップロードファイル移動
-
-$file_dir = UPLOAD_FILES . $token;
+$file_dir = UPLOAD_FILES . $file_path_hash;
 $file_path = $file_dir . '/'. $file_name;
 if (!mkdir($file_dir)){
     show_errors($json_list, 'ファイルアップロードの設定に失敗しました。');
@@ -70,5 +73,5 @@ if (!@move_uploaded_file($_FILES['file']['tmp_name'], $file_path)){
 
 
 // 完了処理
-$json_list['data'] = ['token' => $token];
+$json_list['data'] = ['token' => $token, 'secret_token' => $secret_token];
 show_success($json_list, 'アップロードに成功しました');
