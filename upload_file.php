@@ -33,7 +33,7 @@ $token_sql = create_insert_sql($link, 'sender', [
     'send_token' => $token,
     'send_agent' => $_SERVER['HTTP_USER_AGENT'],
     'send_ipaddr' => $_SERVER["REMOTE_ADDR"],
-    'secret_token' => $secret_token,
+    'send_secret_token' => $secret_token,
     'send_flag' => 1
 ]);
 $result = mysqli_query($link, $token_sql);

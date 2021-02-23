@@ -3,10 +3,7 @@
 require_once './__default.php';
 
 // ----- トークンチェック
-if (!isset($_POST['secret_token']) || strlen($_POST['secret_token']) !== 64){
-    show_errors($json_list, '送信者トークン形式が正しくありません。');
-}
-if (!isset($_POST['send_token']) || strlen($_POST['send_token']) !== 64){
+if (!isset($_POST['send_secret_token']) || strlen($_POST['send_secret_token']) !== 64){
     show_errors($json_list, '送信者トークン形式が正しくありません。');
 }
 
@@ -20,16 +17,11 @@ mysqli_set_charset($link, 'utf8');
 
 
 // 受信者トークン・秘密トークンチェック
-$token_check_sql = 'SELECT * FROM sender WHERE send_token = "'. esc($link, $_POST['send_token']). '" AND secret_token = "'. esc($link, $_POST['secret_token']) .'" AND send_flag = 1';
-$token_list = get_allrows($link, $token_check_sql);
-
-if (count($token_list) <= 0){
-    show_errors($json_list, 'トークンが存在しません。');
-}
+$sender_token = get_sender_secret2token($link, $json_list, $_POST['send_secret_token']);
 
 
 // ダウンロード数取得
-$filecount_sql = 'SELECT * FROM file_download JOIN reciever ON reciever.recv_token = file_download.recv_token WHERE send_token = "'. esc($link, $_POST['send_token']) .'"';
+$filecount_sql = 'SELECT * FROM file_download JOIN reciever ON reciever.recv_token = file_download.recv_token WHERE send_token = "'. esc($link, $sender_token) .'"';
 $download_list = get_allrows($link, $filecount_sql);
 
 

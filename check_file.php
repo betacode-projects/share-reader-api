@@ -5,7 +5,7 @@ require_once './__default.php';
 
 
 // ----- トークンチェック
-if (!isset($_POST['token']) || strlen($_POST['token']) !== 64){
+if (!isset($_POST['recv_secret_token']) || strlen($_POST['recv_secret_token']) !== 64){
     show_errors($json_list, 'トークン形式が正しくありません。');
 }
 
@@ -17,14 +17,16 @@ if (!$link) {
 }
 mysqli_set_charset($link, 'utf8');
 
+$recv_token = get_reciever_secret2token($link, $json_list, $_POST['recv_secret_token']);
 
-$check_sql = 'SELECT * FROM qr_read_list WHERE recv_token = "'. esc($link, $_POST['token']) .'"';
-$file_list = get_allrows($link, $check_sql);
 
-if (count($file_list) <= 0){
+$check_sql = 'SELECT * FROM qr_read_list WHERE recv_token = "'. esc($link, $recv_token) .'"';
+$check_list = get_allrows($link, $check_sql);
+
+if (count($check_list) <= 0){
     show_errors($json_list,'トークンと一致するファイルは見つかりませんでした。');
 }
-$sender_token = $file_list[0]['send_token'];
+$sender_token = $check_list[0]['send_token'];
 
 
 // ----- json出力

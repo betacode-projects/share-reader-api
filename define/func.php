@@ -120,3 +120,26 @@ function create_uuid(){
     return hash('sha256', bin2hex(random_bytes(64)));
 }
 
+
+function get_sender_secret2token($link, $json_list, $send_secret_token){
+    // 送信者トークン・秘密トークンチェック
+    $token_check_sql = 'SELECT * FROM sender WHERE send_secret_token = "'. esc($link, $send_secret_token) .'" AND send_flag = 1';
+    $token_list = get_allrows($link, $token_check_sql);
+
+    if (count($token_list) <= 0){
+        show_errors($json_list, 'トークンが存在しません。');
+    }
+    return $token_list[0]['send_token'];
+}
+
+
+function get_reciever_secret2token($link, $json_list, $recv_secret_token){
+    // 受信者トークン・秘密トークンチェック
+    $token_check_sql = 'SELECT * FROM reciever WHERE recv_secret_token = "'. esc($link, $recv_secret_token) .'" AND recv_flag = 1';
+    $token_list = get_allrows($link, $token_check_sql);
+
+    if (count($token_list) <= 0){
+        show_errors($json_list, 'トークンが存在しません。');
+    }
+    return $token_list[0]['recv_token'];
+}

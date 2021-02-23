@@ -3,7 +3,7 @@
 require_once './__default.php';
 
 // ----- 送信者トークンチェック
-if (!isset($_POST['secret_token']) || strlen($_POST['secret_token']) !== 64){
+if (!isset($_POST['send_secret_token']) || strlen($_POST['send_secret_token']) !== 64){
     show_errors($json_list, 'トークン形式が正しくありません。', 'NG');
 }
 
@@ -21,13 +21,7 @@ $token = create_uuid();
 
 
 // 受信者トークン・秘密トークンチェック
-$token_check_sql = 'SELECT * FROM sender WHERE secret_token = "'. esc($link, $_POST['secret_token']) .'" AND send_flag = 1';
-$token_list = get_allrows($link, $token_check_sql);
-
-if (count($token_list) <= 0){
-    show_errors($json_list, 'トークンが存在しません。');
-}
-$before_token = $token_list[0]['send_token'];
+$before_token = get_sender_secret2token($link, $json_list, $_POST['send_secret_token']);
 
 
 // 受信者削除
@@ -47,7 +41,7 @@ $token_sql = create_insert_sql($link, 'sender', [
     'send_token' => $token,
     'send_agent' => $_SERVER['HTTP_USER_AGENT'],
     'send_ipaddr' => $_SERVER["REMOTE_ADDR"],
-    'secret_token' => $secret_token,
+    'send_secret_token' => $secret_token,
     'send_flag' => 1
 ]);
 $result = mysqli_query($link, $token_sql);
@@ -80,7 +74,14 @@ if (!$result){
     show_errors($json_list, '送信者トークンの更新に失敗しました。');
 }
 
+// QR読み込みリスト更新
+$token_remove_sql = create_update_sql($link, 'qr_read_list', ['send_token' => $token], '"'.esc($link, $before_token) .'"', 'send_token');
+$result = mysqli_query($link, $token_remove_sql);
+if (!$result){
+    show_errors($json_list, '送信者トークンの更新に失敗しました。');
+}
+
 
 // 完了処理
-$json_list['data'] = ['token' => $token, 'secret_token' => $secret_token];
-show_success($json_list, 'アップロードに成功しました');
+$json_list['data'] = ['sender_token' => $token, 'sender_secret_token' => $secret_token];
+show_success($json_list, 'ファイル操作権限の移行に成功しました。');

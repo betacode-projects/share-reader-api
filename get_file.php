@@ -3,11 +3,8 @@
 require_once './__default.php';
 
 // ----- トークンチェック
-if (!isset($_POST['recv_token']) || strlen($_POST['recv_token']) !== 64){
+if (!isset($_POST['recv_secret_token']) || strlen($_POST['recv_secret_token']) !== 64){
     show_errors($json_list, '受信者トークン形式が正しくありません。');
-}
-if (!isset($_POST['send_token']) || strlen($_POST['send_token']) !== 64){
-    show_errors($json_list, '送信者トークン形式が正しくありません。');
 }
 
 
@@ -20,23 +17,35 @@ mysqli_set_charset($link, 'utf8');
 
 
 // 受信者検索
-$filecheck_sql = 'SELECT * FROM reciever WHERE recv_token = "'. esc($link, $_POST['recv_token']) .'" AND recv_flag = 1';
-$file_list = get_allrows($link, $filecheck_sql);
+$recvcheck_sql = 'SELECT * FROM reciever WHERE recv_secret_token = "'. esc($link, $_POST['recv_secret_token']) .'" AND recv_flag = 1';
+$recv_list = get_allrows($link, $recvcheck_sql);
 
-if (count($file_list) <= 0){
+if (count($recv_list) <= 0){
     show_errors($json_list, '受信者トークンが見つかりません。');
 }
+$recv_token = $recv_list[0]['recv_token'];
+
 
 // 受信者削除
-$token_remove_sql = create_update_sql($link, 'reciever', ['recv_flag' => 0], '"'.esc($link, $_POST['recv_token']) .'"', 'recv_token');
+$token_remove_sql = create_update_sql($link, 'reciever', ['recv_flag' => 0], '"'.esc($link, $recv_token) .'"', 'recv_token');
 $result = mysqli_query($link, $token_remove_sql);
 if (!$result){
     show_errors($json_list, '受信者トークンの更新に失敗しました。');
 }
 
 
+// 送信者トークン取得
+$check_sql = 'SELECT * FROM qr_read_list WHERE recv_token = "'. esc($link, $recv_token) .'"';
+$file_list = get_allrows($link, $check_sql);
+
+if (count($file_list) <= 0){
+    show_errors($json_list,'トークンと一致するファイルは見つかりませんでした。');
+}
+$sender_token = $file_list[0]['send_token'];
+
+
 // ファイル情報テーブルにアクセス
-$filecheck_sql = 'SELECT * FROM file_info WHERE send_token = "'. esc($link, $_POST['send_token']) .'" AND file_flag = 1';
+$filecheck_sql = 'SELECT * FROM file_info WHERE send_token = "'. esc($link, $sender_token) .'" AND file_flag = 1';
 $file_list = get_allrows($link, $filecheck_sql);
 
 if (count($file_list) <= 0){
@@ -63,8 +72,8 @@ if ($file_hash !== $file_info['file_hash']){
 
 // ダウンロード数+1
 $download_sql = create_insert_sql($link, 'file_download', [
-    'recv_token' => $_POST['recv_token'],
-    'send_token' => $_POST['send_token']
+    'recv_token' => $recv_token,
+    'send_token' => $sender_token
 ]);
 mysqli_query($link, $download_sql);
 

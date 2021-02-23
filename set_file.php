@@ -5,7 +5,7 @@ $json_list['data'] = ['flag' => false];
 
 
 // ----- 送信者トークンチェック
-if (!isset($_POST['token']) || strlen($_POST['token']) !== 64 || !isset($_POST['recv_token']) || strlen($_POST['recv_token']) !== 64){
+if (!isset($_POST['send_token']) || strlen($_POST['send_token']) !== 64 || !isset($_POST['recv_token']) || strlen($_POST['recv_token']) !== 64){
     show_errors($json_list, 'トークン形式が正しくありません。', 'NG');
 }
 
@@ -18,15 +18,15 @@ if (!$link) {
 mysqli_set_charset($link, 'utf8');
 
 
-// SQL生成
+// 受信者トークンがすでにファイルと結ばれていないか判定
 $token_sql = create_insert_sql($link, 'qr_read_list', [
     'recv_token' => $_POST['recv_token'],
-    'send_token' => $_POST['token']
+    'send_token' => $_POST['send_token']
 ]);
 
 $result = mysqli_query($link, $token_sql);
 if (!$result){
-    show_errors($json_list, 'トークンが一致しませんでした', 'NG');
+    show_errors($json_list, 'この受信者トークンは、すでに他のファイルと連携済みです。', 'NG');
 }
 
 
