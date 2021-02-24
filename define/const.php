@@ -7,3 +7,4 @@ const DB_USER = 'root';
 const DB_PASS = '';
 
 const UPLOAD_FILES = 'upload_files/';
+const ERROR_PAGE = '../share-reader-pre/error.html';

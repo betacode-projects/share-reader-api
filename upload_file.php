@@ -61,12 +61,7 @@ if (!$result)
 
 
 // アップロードファイル移動
-$file_dir = UPLOAD_FILES . $file_path_hash;
-$file_path = $file_dir . '/'. $file_name;
-if (!mkdir($file_dir)){
-    show_errors($json_list, 'ファイルアップロードの設定に失敗しました。');
-}
-
+$file_path = UPLOAD_FILES . $file_path_hash;
 if (!@move_uploaded_file($_FILES['file']['tmp_name'], $file_path)){
     show_errors($json_list, 'ファイルアップロードに失敗しました。');
 }

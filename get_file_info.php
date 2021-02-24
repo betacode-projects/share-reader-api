@@ -19,6 +19,7 @@ elseif (isset($_POST['recv_secret_token']) && strlen($_POST['recv_secret_token']
     // 受信者トークン・秘密トークンチェック
     $recv_token = get_reciever_secret2token($link, $json_list, $_POST['recv_secret_token']);
 
+
     $check_sql = 'SELECT * FROM qr_read_list WHERE recv_token = "'. esc($link, $recv_token) .'"';
     $check_list = get_allrows($link, $check_sql);
 
@@ -44,7 +45,7 @@ if (count($file_list) <= 0){
 
 // ファイルチェック
 $file_info = $file_list[0];
-$file_path = UPLOAD_FILES . $file_info['file_path'] . '/'. $file_info['file_name'];
+$file_path = UPLOAD_FILES . $file_info['file_path'];
 if (!is_file($file_path)){
     show_errors($json_list, 'ファイルが存在しません。');
 }
