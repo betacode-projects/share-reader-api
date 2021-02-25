@@ -21,7 +21,7 @@ $sender_token = get_sender_secret2token($link, $json_list, $_POST['send_secret_t
 
 
 // ダウンロード数取得
-$filecount_sql = 'SELECT * FROM file_download JOIN reciever ON reciever.recv_token = file_download.recv_token WHERE send_token = "'. esc($link, $sender_token) .'"';
+$filecount_sql = 'SELECT * FROM file_download JOIN reciever ON reciever.recv_token = file_download.recv_token WHERE send_token = "'. esc($link, $sender_token) .'" ORDER BY file_downloaded';
 $download_list = get_allrows($link, $filecount_sql);
 
 
