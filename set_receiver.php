@@ -17,7 +17,7 @@ $token = '';
 $token_changed = true;
 if (isset($_POST['token']) && strlen($_POST['token']) === 64 && isset($_POST['secret_token']) && strlen($_POST['secret_token']) === 64){
     // DBからのリスト取得
-    $token_check_sql = 'SELECT * FROM reciever WHERE recv_token = "'. esc($link, $_POST['token']). '" AND recv_secret_token = "'. esc($link, $_POST['secret_token']) .'" AND recv_flag = 1';
+    $token_check_sql = 'SELECT * FROM receiver WHERE recv_token = "'. esc($link, $_POST['token']). '" AND recv_secret_token = "'. esc($link, $_POST['secret_token']) .'" AND recv_flag = 1';
     $token_list = get_allrows($link, $token_check_sql);
 
     if (count($token_list) > 0){
@@ -36,7 +36,7 @@ else{
 // トークン追加処理
 if ($token_changed){
     // SQL生成
-    $token_sql = create_insert_sql($link, 'reciever', [
+    $token_sql = create_insert_sql($link, 'receiver', [
         'recv_token' => $token,
         'recv_agent' => $_SERVER['HTTP_USER_AGENT'],
         'recv_ipaddr' => $_SERVER["REMOTE_ADDR"],

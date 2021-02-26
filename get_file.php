@@ -32,7 +32,7 @@ mysqli_set_charset($link, 'utf8');
 
 
 // 受信者検索
-$recvcheck_sql = 'SELECT * FROM reciever WHERE recv_secret_token = "'. esc($link, $_GET['recv_secret_token']) .'" AND recv_flag = 1';
+$recvcheck_sql = 'SELECT * FROM receiver WHERE recv_secret_token = "'. esc($link, $_GET['recv_secret_token']) .'" AND recv_flag = 1';
 $recv_list = get_allrows($link, $recvcheck_sql);
 
 if (count($recv_list) <= 0){
@@ -42,7 +42,7 @@ $recv_token = $recv_list[0]['recv_token'];
 
 
 // 受信者削除
-$token_remove_sql = create_update_sql($link, 'reciever', ['recv_flag' => 0], '"'.esc($link, $recv_token) .'"', 'recv_token');
+$token_remove_sql = create_update_sql($link, 'receiver', ['recv_flag' => 0], '"'.esc($link, $recv_token) .'"', 'recv_token');
 $result = mysqli_query($link, $token_remove_sql);
 if (!$result){
     show_error_headers('受信者トークンの更新に失敗しました。', 500, 4);

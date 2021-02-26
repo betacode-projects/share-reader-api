@@ -133,9 +133,9 @@ function get_sender_secret2token($link, $json_list, $send_secret_token){
 }
 
 
-function get_reciever_secret2token($link, $json_list, $recv_secret_token){
+function get_receiver_secret2token($link, $json_list, $recv_secret_token){
     // 受信者トークン・秘密トークンチェック
-    $token_check_sql = 'SELECT * FROM reciever WHERE recv_secret_token = "'. esc($link, $recv_secret_token) .'" AND recv_flag = 1';
+    $token_check_sql = 'SELECT * FROM receiver WHERE recv_secret_token = "'. esc($link, $recv_secret_token) .'" AND recv_flag = 1';
     $token_list = get_allrows($link, $token_check_sql);
 
     if (count($token_list) <= 0){

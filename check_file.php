@@ -17,7 +17,7 @@ if (!$link) {
 }
 mysqli_set_charset($link, 'utf8');
 
-$recv_token = get_reciever_secret2token($link, $json_list, $_POST['recv_secret_token']);
+$recv_token = get_receiver_secret2token($link, $json_list, $_POST['recv_secret_token']);
 
 
 $check_sql = 'SELECT * FROM qr_read_list WHERE recv_token = "'. esc($link, $recv_token) .'"';

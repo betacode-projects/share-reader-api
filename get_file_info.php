@@ -17,19 +17,19 @@ if (isset($_POST['send_secret_token']) && strlen($_POST['send_secret_token']) ==
 }
 elseif (isset($_POST['recv_secret_token']) && strlen($_POST['recv_secret_token']) === 64){
     // 受信者トークン・秘密トークンチェック
-    $recv_token = get_reciever_secret2token($link, $json_list, $_POST['recv_secret_token']);
+    $recv_token = get_receiver_secret2token($link, $json_list, $_POST['recv_secret_token']);
 
 
     $check_sql = 'SELECT * FROM qr_read_list WHERE recv_token = "'. esc($link, $recv_token) .'"';
     $check_list = get_allrows($link, $check_sql);
 
     if (count($check_list) <= 0){
-        show_errors($json_list,'トークンと一致するファイルは見つかりませんでした。');
+        show_errors($json_list,'トークンと一致するファイルは見つかりませんでした。', '404');
     }
     $send_token = $check_list[0]['send_token'];
 }
 else {
-    show_errors($json_list, 'トークンがありません。');
+    show_errors($json_list, 'トークンがありません。', '404');
 }
 
 
@@ -39,7 +39,7 @@ $filecheck_sql = 'SELECT * FROM file_info WHERE send_token = "'. esc($link, $sen
 $file_list = get_allrows($link, $filecheck_sql);
 
 if (count($file_list) <= 0){
-    show_errors($json_list, 'ファイル情報が見つかりません。');
+    show_errors($json_list, 'ファイル情報が見つかりません。', '404');
 }
 
 
@@ -47,7 +47,7 @@ if (count($file_list) <= 0){
 $file_info = $file_list[0];
 $file_path = UPLOAD_FILES . $file_info['file_path'];
 if (!is_file($file_path)){
-    show_errors($json_list, 'ファイルが存在しません。');
+    show_errors($json_list, 'ファイルが存在しません。', '404');
 }
 unset($file_info['file_path']);
 
