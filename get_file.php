@@ -98,6 +98,7 @@ while (ob_get_clean()) {
     ob_end_clean();
 }
 header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/octet-stream");
 header('Content-Length: '.filesize($file_path));
 header('Content-Disposition: attachment; filename="'.$file_info['file_name'].'"');
 readfile($file_path);
