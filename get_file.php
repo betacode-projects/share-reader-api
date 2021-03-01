@@ -100,12 +100,5 @@ while (ob_get_clean()) {
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/octet-stream");
 header('Content-Length: '.filesize($file_path));
-header('Content-Disposition: attachment; filename="'.$file_info['file_name'].'"');
+header('Content-Disposition: attachment; filename="'.$file_info['file_name'].'.'. $file_info['file_ext'] .'";filename*=UTF-8\'\''.rawurlencode($file_info['file_name'].'.'.$file_info['file_ext']));
 readfile($file_path);
-
-/*
-header("Content-Type: application/json; charset=UTF-8");
-$download_url = (empty($_SERVER['HTTPS']) ? 'http://' : 'https://') . $_SERVER['HTTP_HOST'] . dirname($_SERVER['REQUEST_URI']).'/'. $file_path;
-$json_list['data'] = ['file_link' => $download_url];
-show_success($json_list, 'ファイルダウンロード時の設定が完了しました');
-*/

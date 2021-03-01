@@ -10,10 +10,12 @@ if (!isset($_FILES['file']) || empty($_FILES['file']['tmp_name'])){
 
 
 // MIME・ファイルサイズ・ファイル名情報取得
+$path_info = pathinfo($_FILES['file']['name']);
 $finfo = new finfo(FILEINFO_MIME_TYPE);
 $file_mime = $finfo->file($_FILES['file']['tmp_name']);
 $file_size = $_FILES['file']['size'];
-$file_name = $_FILES['file']['name'];
+$file_name = $path_info['filename'];
+$file_ext = $path_info['extension'];
 
 
 // DB接続
@@ -50,6 +52,7 @@ $fileinfo_sql = create_insert_sql($link, 'file_info', [
     'send_token' => $token,
     'file_size' => (int)$file_size,
     'file_name' => $file_name,
+    'file_ext' => $file_ext,
     'file_format' => $file_mime,
     'file_hash' => $file_hash,
     'file_path' => $file_path_hash,
