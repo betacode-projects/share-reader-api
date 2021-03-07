@@ -30,5 +30,5 @@ if (count($token_list) <= 0){
 }
 
 
-$json_list['data'] = ['flag' => true];
+$json_list['data'] = ['flag' => true, 'token' => $send_token];
 show_success($json_list, '送信者トークン照合に成功しました。');
